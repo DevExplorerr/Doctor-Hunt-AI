@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 
 const { callQwen } = require("./services/qwen");
 const triageRoutes = require("./routes/triage");
+const decoderRoutes = require("./routes/decoder");
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
@@ -44,6 +45,7 @@ app.get("/api/test-qwen", async (req, res) => {
 });
 
 app.use("/api/triage", triageRoutes);
+app.use("/api/decoder", decoderRoutes);
 
 app.use(errorHandler);
 
