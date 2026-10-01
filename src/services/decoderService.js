@@ -106,7 +106,7 @@ async function analyzeDocument(imageUrl) {
         },
     ];
 
-    const visionModel = process.env.ALIBABA_VISION_MODEL || "qwen-vl-plus";
+    const visionModel = process.env.ALIBABA_VISION_MODEL || "qwen-vl-max";
 
     const response = await callQwen(messages, {
         model: visionModel,

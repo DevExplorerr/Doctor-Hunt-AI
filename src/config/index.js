@@ -6,11 +6,9 @@ module.exports = {
     alibaba: {
         endpoint: process.env.ALIBABA_ENDPOINT,
         apiKey: process.env.ALIBABA_API_KEY,
-        model: process.env.ALIBABA_MODEL || "qwen-plus",
-        // Structured JSON output (response_format json_object). Supported by
-        // qwen-plus / qwen-flash; disable via ALIBABA_JSON_MODE=false if the
-        // configured model rejects it (the prompt-only fallback parser stays
-        // active as a second validation layer either way).
+        model: process.env.ALIBABA_MODEL || "qwen-max",
+        // Structured JSON output requires support from the configured model.
+        // Disable it for triage with ALIBABA_JSON_MODE=false if unsupported.
         jsonMode: process.env.ALIBABA_JSON_MODE !== "false",
     },
     server: {

@@ -270,8 +270,8 @@ Normalized fields:
 
 - **Provider** — Alibaba Cloud **Model Studio**, called through its OpenAI-compatible chat-completions endpoint (`ALIBABA_ENDPOINT`) with bearer-token authentication (`ALIBABA_API_KEY`). No AI SDK is used — requests are plain HTTPS `POST` calls via Node's built-in `fetch`.
 - **Models** — configurable via environment variables, with code-level defaults:
-  - `ALIBABA_MODEL` → `qwen-plus` (default) for symptom triage
-  - `ALIBABA_VISION_MODEL` → `qwen-vl-plus` (default) for document analysis
+  - `ALIBABA_MODEL` → `qwen-max` (default) for symptom triage
+  - `ALIBABA_VISION_MODEL` → `qwen-vl-max` (default) for document analysis
 - **Request construction**
   - _Triage:_ the system prompt (built per language, en/ur) plus the stored conversation history. Temperature `0.3`, and structured-output mode (`response_format: json_object`) when `ALIBABA_JSON_MODE` is enabled (default).
   - _Decoder:_ the decoder system prompt plus one user message containing the image URL and an instruction to analyze it. Temperature `0.3`, always structured-output mode.
@@ -281,7 +281,7 @@ Normalized fields:
   - Sessions and rate-limit counters are **in-memory** — they reset on every restart/redeploy.
   - Conversation history is capped at 20 messages (system prompts preserved).
   - Triage conversations are capped at 8 turns, after which completion is forced.
-  - Structured JSON output mode requires a model that supports it (the defaults do).
+  - Structured JSON output mode requires support from the selected model. Triage JSON mode can be disabled with `ALIBABA_JSON_MODE=false`; decoder JSON mode is always enabled.
 
 ## Medical Document Analysis
 
@@ -294,7 +294,7 @@ Route validation            (imageUrl must be a valid HTTP(S) URL)
     ↓
 Decoder Service             (system prompt + image URL + instruction)
     ↓
-Qwen vision model           (ALIBABA_VISION_MODEL, default qwen-vl-plus)
+Qwen vision model           (ALIBABA_VISION_MODEL, default qwen-vl-max)
     ↓
 Response validation         (fences stripped, JSON parsed, fields normalized)
     ↓
@@ -369,20 +369,20 @@ Copy `.env.example` to `.env` and fill in real values. Placeholders only — nev
 ```env
 ALIBABA_API_KEY=your_alibaba_api_key
 ALIBABA_ENDPOINT=https://your-model-studio-endpoint.example.com/compatible-mode/v1/chat/completions
-ALIBABA_MODEL=qwen-plus
-ALIBABA_VISION_MODEL=qwen-vl-plus
+ALIBABA_MODEL=qwen-max
+ALIBABA_VISION_MODEL=qwen-vl-max
 ALIBABA_JSON_MODE=true
 PORT=3000
 ```
 
-| Variable               | Required | Default        | Purpose                                                     |
-| ---------------------- | -------- | -------------- | ----------------------------------------------------------- |
-| `ALIBABA_API_KEY`      | Yes      | —              | Bearer token for the Model Studio API (server-side only)    |
-| `ALIBABA_ENDPOINT`     | Yes      | —              | OpenAI-compatible chat-completions endpoint URL             |
-| `ALIBABA_MODEL`        | No       | `qwen-plus`    | Text model for symptom triage                               |
-| `ALIBABA_VISION_MODEL` | No       | `qwen-vl-plus` | Vision model for document analysis                          |
-| `ALIBABA_JSON_MODE`    | No       | `true`         | Structured JSON output mode for triage (`false` to disable) |
-| `PORT`                 | No       | `3000`         | Listen port (injected by Render in production)              |
+| Variable               | Required | Default       | Purpose                                                     |
+| ---------------------- | -------- | ------------- | ----------------------------------------------------------- |
+| `ALIBABA_API_KEY`      | Yes      | —             | Bearer token for the Model Studio API (server-side only)    |
+| `ALIBABA_ENDPOINT`     | Yes      | —             | OpenAI-compatible chat-completions endpoint URL             |
+| `ALIBABA_MODEL`        | No       | `qwen-max`    | Text model for symptom triage                               |
+| `ALIBABA_VISION_MODEL` | No       | `qwen-vl-max` | Vision model for document analysis                          |
+| `ALIBABA_JSON_MODE`    | No       | `true`        | Structured JSON output mode for triage (`false` to disable) |
+| `PORT`                 | No       | `3000`        | Listen port (injected by Render in production)              |
 
 > **Never commit `.env` or API credentials.** The `.gitignore` already excludes `.env`.
 

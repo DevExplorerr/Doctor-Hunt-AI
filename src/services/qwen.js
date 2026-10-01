@@ -12,10 +12,8 @@ async function callQwen(messages, options = {}) {
         body.temperature = options.temperature;
     }
 
-    // Alibaba Model Studio structured output mode. The requesting model
-    // must support it (qwen-plus / qwen-flash do; qwen-plus-character
-    // does not). Messages must contain the word "JSON" — the system
-    // prompt always does.
+    // The configured model must support structured output. Messages must
+    // contain the word "JSON"; the system prompts include it.
     if (options.responseFormat) {
         body.response_format = options.responseFormat;
     }

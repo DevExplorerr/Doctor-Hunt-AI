@@ -30,6 +30,7 @@ async function processChat(sessionId, message, language = "en") {
 
     session = conversationStore.getSession(sessionId);
     const apiResult = await callQwen(session.messages, {
+        model: config.alibaba.model,
         temperature: config.temperature,
         responseFormat: config.alibaba.jsonMode
             ? { type: "json_object" }
